@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <!-- SEO Meta Tags -->
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Content Designer Portfolio | Singgih Kahar</title>
-  <meta name="description" content="Portfolio profesional Singgih Kahar, Interior Designer spesialis Residential, Commercial, dan 3D Visualization. Lihat karya desain, layanan, dan hubungi untuk kolaborasi.">
-
-  <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css">
-
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css?family=Playfair+Display:700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css?family=Inter:400,500&display=swap" rel="stylesheet">
-
-  <!-- FAVICON (GitHub Pages Safe) -->
-  <link rel="icon" type="image/png" href="assets/images/icon.png?v=1">
-</head>
-
+  <head>
+    <!-- SEO Meta Tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Content Designer Portfolio | Singgih Kahar</title>
+    <meta name="description" content="Portfolio profesional Singgih Kahar, Interior Designer spesialis Residential, Commercial, dan 3D Visualization. Lihat karya desain, layanan, dan hubungi untuk kolaborasi.">
+  
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+  
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Playfair+Display:700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Inter:400,500&display=swap" rel="stylesheet">
+  
+    <!-- FAVICON (GitHub Pages Safe) -->
+    <link rel="icon" type="image/png" href="assets/images/icon.png?v=1">
+  </head>
+  
 <body>
   <!-- Header & Navigation -->
   <header>
@@ -336,36 +336,81 @@
 
   <!-- JS Script -->
   <script>
-    const items = document.querySelectorAll('.testimonial-item');
-    const track = document.querySelector('.testimonial-track');
-    const nextBtn = document.querySelector('.testimonial-nav .next');
-    const prevBtn = document.querySelector('.testimonial-nav .prev');
-  
-    let index = 0;
-  
-    function updateSlider() {
+    document.addEventListener('DOMContentLoaded', () => {
+      const track = document.querySelector('.testimonial-track');
+      const items = document.querySelectorAll('.testimonial-item');
+      const nextBtn = document.querySelector('.testimonial-nav .next');
+      const prevBtn = document.querySelector('.testimonial-nav .prev');
+    
+      let index = 1;
+      let isMoving = false;
+    
+      // Clone first & last item
+      const firstClone = items[0].cloneNode(true);
+      const lastClone = items[items.length - 1].cloneNode(true);
+    
+      firstClone.classList.add('clone');
+      lastClone.classList.add('clone');
+    
+      track.appendChild(firstClone);
+      track.prepend(lastClone);
+    
+      const allItems = document.querySelectorAll('.testimonial-item');
+    
+      // Initial position
       track.style.transform = `translateX(-${index * 100}%)`;
-      items.forEach(item => item.classList.remove('active'));
-      items[index].classList.add('active');
-    }
-  
-    nextBtn.addEventListener('click', () => {
-      index = (index + 1) % items.length;
-      updateSlider();
+    
+      function updateActive() {
+        allItems.forEach(item => item.classList.remove('active'));
+        if (allItems[index]) {
+          allItems[index].classList.add('active');
+        }
+      }
+    
+      function moveSlider() {
+        if (isMoving) return;
+        isMoving = true;
+    
+        track.style.transition = 'transform 0.5s ease';
+        track.style.transform = `translateX(-${index * 100}%)`;
+        updateActive();
+      }
+    
+      track.addEventListener('transitionend', () => {
+        isMoving = false;
+    
+        if (allItems[index].classList.contains('clone')) {
+          track.style.transition = 'none';
+    
+          if (index === 0) {
+            index = items.length;
+          } else if (index === allItems.length - 1) {
+            index = 1;
+          }
+    
+          track.style.transform = `translateX(-${index * 100}%)`;
+          updateActive();
+        }
+      });
+    
+      nextBtn.addEventListener('click', () => {
+        index++;
+        moveSlider();
+      });
+    
+      prevBtn.addEventListener('click', () => {
+        index--;
+        moveSlider();
+      });
+    
+      // Auto slide
+      setInterval(() => {
+        index++;
+        moveSlider();
+      }, 6000);
     });
-  
-    prevBtn.addEventListener('click', () => {
-      index = (index - 1 + items.length) % items.length;
-      updateSlider();
-    });
-  
-    // Auto slide (opsional)
-    setInterval(() => {
-      index = (index + 1) % items.length;
-      updateSlider();
-    }, 6000);
-  </script>
+    </script>
+    
   
 </body>
 </html>
-
